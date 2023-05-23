@@ -1,18 +1,18 @@
-"use client"
-import React from 'react'
-import {DragDropContext,Droppable,Draggable} from 'react-beautiful-dnd'
-import uuid from 'uuid'
-
-const itemsFromBackend = [
-    {id:uuid(),content:"first task"}
-]
-export default function App(){
-    return (
-        <div className='h-screen max-w-screen flex items-center justify-center'>
-            <DragDropContext onDropEnd={result=>console.log(result)} >
-                
-                
-            </DragDropContext>
-            </div>
-    )
+"use client";
+import dynamic from "next/dynamic";
+import { useEffect, useState } from "react";
+import Column from "../../components/dnd/MainComponent";
+// const Column = dynamic(import("../../components/dnd/MainComponent"));
+function ScrumBoard() {
+  const [winReady, setwinReady] = useState(false);
+  useEffect(() => {
+    setwinReady(true);
+  }, []);
+  return (
+    <div className="pl-4 pr-4 pt-3">
+      <div>hello forehead</div>
+      <Column />
+    </div>
+  );
 }
+export default ScrumBoard;
