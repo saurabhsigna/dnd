@@ -1,8 +1,13 @@
-import React from "react";
+"use client";
+import React, { useState } from "react";
 
 const SignUpPage = () => {
+  const [showPassword, setShowPassword] = useState(false);
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };
   return (
-    <section className="bg-gray-900">
+    <section className=" bg-gray-100 dark:bg-gray-900">
       <div className="flex flex-wrap">
         <div className="pt-6 lg:pt-16 pb-6 w-full lg:w-1/2">
           <div className="max-w-md mx-auto">
@@ -27,8 +32,8 @@ const SignUpPage = () => {
             </div>
             <div>
               <div className="mb-6 px-3">
-                <span className="text-gray-500">Sign Up</span>
-                <h3 className="text-2xl font-bold text-white">
+                <span className="text-gray-600 ">Sign Up</span>
+                <h3 className="text-2xl font-bold text-black dark:text-white">
                   Create an account
                 </h3>
               </div>
@@ -36,14 +41,14 @@ const SignUpPage = () => {
                 <div className="flex flex-wrap">
                   <div className="mb-3 w-full lg:w-1/2 px-2">
                     <input
-                      className="w-full p-4 text-xs text-gray-50 bg-gray-800 outline-none rounded"
+                      className="w-full p-4 text-xs text-black dark:text-gray-50 dark:bg-gray-800 bg-gray-200 outline-none rounded"
                       type="text"
                       placeholder="First Name"
                     />
                   </div>
                   <div className="mb-3 w-full lg:w-1/2 px-2">
                     <input
-                      className="w-full p-4 text-xs text-gray-50 bg-gray-800 outline-none rounded"
+                      className="w-full p-4 text-xs text-black dark:text-gray-50 dark:bg-gray-800 bg-gray-200 outline-none rounded"
                       type="text"
                       placeholder="Last Name"
                     />
@@ -51,7 +56,7 @@ const SignUpPage = () => {
                 </div>
                 <div className="mb-3 flex p-4 mx-2 bg-gray-800 rounded">
                   <input
-                    className="w-full text-xs text-gray-50 bg-gray-800 outline-none"
+                    className="w-full text-xs text-black dark:text-gray-50 dark:bg-gray-800 bg-gray-200 outline-none"
                     type="email"
                     placeholder="name@example.com"
                   />
@@ -72,11 +77,11 @@ const SignUpPage = () => {
                 </div>
                 <div className="mb-6 flex p-4 mx-2 bg-gray-800 rounded">
                   <input
+                    type={showPassword ? "text" : "password"}
                     className="w-full text-xs text-gray-50 bg-gray-800 outline-none"
-                    type="password"
                     placeholder="Enter your password"
                   />
-                  <button>
+                  <button type="button" onClick={togglePasswordVisibility}>
                     <svg
                       className="h-6 w-6 ml-4 my-auto text-gray-300"
                       xmlns="http://www.w3.org/2000/svg"
@@ -160,7 +165,7 @@ const SignUpPage = () => {
         <div className="lg:hidden">
           <div className="relative w-full">
             <img
-              className="relative mb-4 object-cover"
+              className=" relative mb-4 object-cover"
               src="https://images.unsplash.com/photo-1565120130276-dfbd9a7a3ad7?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&amp;ixlib=rb-1.2.1&amp;auto=format&amp;fit=crop&amp;w=1050&amp;q=80"
               alt=""
             />
@@ -192,4 +197,4 @@ const SignUpPage = () => {
   );
 };
 
-export default SignUpSection;
+export default SignUpPage;
