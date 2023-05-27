@@ -4,6 +4,7 @@ import { Inter } from "next/font/google";
 import dynamic from "next/dynamic";
 import { Providers } from "./providers";
 
+
 const DynamicHeader = dynamic(
   () => import("../components/navbar/NavbarComponent"),
   {
@@ -26,10 +27,12 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
+        {/* <RecoilRoot> */}
         <Providers>
           <DynamicHeader />
           {children}
         </Providers>
+        {/* </RecoilRoot> */}
       </body>
     </html>
   );

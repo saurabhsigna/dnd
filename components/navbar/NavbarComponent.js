@@ -1,7 +1,16 @@
 "use client";
 import { Fragment, useState, useEffect } from "react";
 import { useTheme } from "next-themes";
-import { Dialog, Disclosure, Popover, Transition } from "@headlessui/react";
+import { useRecoilValue } from "recoil";
+import Link from "next/link";
+import { UserInfoAtom } from "../../atoms/UserInfoAtom";
+import {
+  Dialog,
+  Disclosure,
+  Popover,
+  Menu,
+  Transition,
+} from "@headlessui/react";
 import {
   ArrowPathIcon,
   Bars3Icon,
@@ -16,7 +25,8 @@ import {
   PhoneIcon,
   PlayCircleIcon,
 } from "@heroicons/react/20/solid";
-
+import { useCookies } from "react-cookie";
+import useUserInfo from "../../hooks/useUserInfo";
 const products = [
   {
     name: "Analytics",
@@ -59,15 +69,37 @@ function classNames(...classes) {
 }
 
 export default function Example() {
+  const [cookies, setCookies, removeCookie] = useCookies(["access_token"]);
+  const token = cookies["access_token"];
   const [mounted, setMounted] = useState(false);
   const { theme, setTheme } = useTheme();
+
+  const userInfo = useRecoilValue(UserInfoAtom);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [darkMode, setDarkMode] = useState(false);
+  const [userName, setUserName] = useState("");
+  const dd = useUserInfo();
   useEffect(() => setMounted(true), []);
+
+  useEffect(() => {
+    if (userInfo) {
+      if (userInfo.fullName) {
+        let name = userInfo.fullName.split(" ")[0];
+        setUserName(name);
+      }
+    }
+    console.log("hinata" + userInfo);
+  }, [userInfo]);
 
   if (!mounted) {
     return null;
   }
+
+  const removeCookieButtonHandler = async () => {
+    removeCookie("access_token");
+    removeCookie("refresh_token");
+    window.location.href = "/";
+  };
   return (
     <>
       <header
@@ -79,7 +111,7 @@ export default function Example() {
           aria-label="Global"
         >
           <div className="flex lg:flex-1">
-            <a href="#" className="-m-1.5 p-1.5">
+            <Link href="/" className="-m-1.5 p-1.5">
               <span className="sr-only">Your Company</span>
               <img
                 className="h-8 w-auto"
@@ -90,7 +122,7 @@ export default function Example() {
                 }
                 alt=""
               />
-            </a>
+            </Link>
           </div>
           <div className="flex lg:hidden">
             <button
@@ -231,22 +263,102 @@ export default function Example() {
             >
               <span>{theme == "dark" ? "Light" : "Dark"}</span>
             </button>
-            <a
-              href="#"
-              className={`text-sm font-semibold leading-6 dark:text-white text-gray-900
+            {token && userInfo ? (
+              <div>
+                <Menu as="div" className="relative ml-3">
+                  <div>
+                    <Menu.Button className="flex items-center rounded-[0.3rem] bg-gray-600 text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800 py-[0.4rem] px-[0.75rem]">
+                      <span className="sr-only">Open user menu</span>
+                      {userName && (
+                        <h2 className="text-white mr-[0.5rem] font-[440] tracking-[0.5px] text-[0.875rem]">
+                          {userName}
+                        </h2>
+                      )}
+                      {userName && userInfo.imgUri ? (
+                        <img
+                          className="h-6 w-6 rounded-full"
+                          src={"/avatars/" + userInfo.imgUri}
+                          alt=""
+                        />
+                      ) : (
+                        <div className="bg-white h-6 w-6 rounded-full"></div>
+                      )}
+                    </Menu.Button>
+                  </div>
+                  <Transition
+                    as={Fragment}
+                    enter="transition ease-out duration-100"
+                    enterFrom="transform opacity-0 scale-95"
+                    enterTo="transform opacity-100 scale-100"
+                    leave="transition ease-in duration-75"
+                    leaveFrom="transform opacity-100 scale-100"
+                    leaveTo="transform opacity-0 scale-95"
+                  >
+                    <Menu.Items className="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
+                      <Menu.Item>
+                        {({ active }) => (
+                          <Link
+                            href="/profile"
+                            className={classNames(
+                              active ? "bg-gray-100" : "",
+                              "block px-4 py-2 text-sm text-gray-700"
+                            )}
+                          >
+                            Your Profile
+                          </Link>
+                        )}
+                      </Menu.Item>
+                      <Menu.Item>
+                        {({ active }) => (
+                          <a
+                            href="#"
+                            className={classNames(
+                              active ? "bg-gray-100" : "",
+                              "block px-4 py-2 text-sm text-gray-700"
+                            )}
+                          >
+                            Settings
+                          </a>
+                        )}
+                      </Menu.Item>
+                      <Menu.Item>
+                        {({ active }) => (
+                          <button
+                            onClick={removeCookieButtonHandler}
+                            className={classNames(
+                              active ? "bg-gray-100" : "",
+                              "block px-4 py-2 text-sm text-gray-700 text-left w-full"
+                            )}
+                          >
+                            Sign out
+                          </button>
+                        )}
+                      </Menu.Item>
+                    </Menu.Items>
+                  </Transition>
+                </Menu>
+              </div>
+            ) : (
+              <div>
+                <Link
+                  href="/signin"
+                  className={`text-sm font-semibold leading-6 dark:text-white text-gray-900
             `}
-            >
-              Sign in
-            </a>
-            <a
-              href="#"
-              className={`ml-8 whitespace-nowrap inline-flex items-center justify-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-semibold leading-6
+                >
+                  Sign in
+                </Link>
+
+                <Link
+                  href="/signup"
+                  className={`ml-8 whitespace-nowrap inline-flex items-center justify-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-semibold leading-6
            dark:text-white dark:bg-indigo-600 dark:hover:bg-indigo-700 
              text-indigo-600 bg-indigo-100 hover:bg-indigo-200
             `}
-            >
-              Sign up
-            </a>
+                >
+                  Sign up
+                </Link>
+              </div>
+            )}
           </div>
         </nav>
         <Transition.Root show={mobileMenuOpen} as={Fragment}>
@@ -297,18 +409,18 @@ export default function Example() {
                   </div>
                 </Transition.Child>
                 <div className="flex-shrink-0 flex items-center px-4">
-                  <a href="#" className="-m-1.5 p-1.5">
+                  <Link href="/" className="-m-1.5 p-1.5">
                     <span className="sr-only">Your Company</span>
                     <img
                       className="h-8 w-auto"
                       src={
                         darkMode
-                          ? "https://tailwindui.com/img/logos/mark-dark.svg?color=indigo&shade=600"
+                          ? "https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=600"
                           : "https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=600"
                       }
                       alt=""
                     />
-                  </a>
+                  </Link>
                 </div>
                 <div className="mt-6">
                   <nav className="grid gap-y-8">
