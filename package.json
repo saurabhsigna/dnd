@@ -25,6 +25,7 @@
     "react-beautiful-dnd": "^13.1.1",
     "react-cookie": "^4.1.1",
     "react-dom": "18.2.0",
+    "recoil": "^0.7.7",
     "tailwindcss-highlights": "^1.0.0",
     "typescript": "5.0.4",
     "uuid": "^9.0.0"

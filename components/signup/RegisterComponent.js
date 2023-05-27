@@ -1,10 +1,38 @@
 "use client";
 import React, { useState } from "react";
-
+import { useCookies } from "react-cookie";
+import AvatarSelectComponent from "../avatarSelector/AvatarSelectComponent";
 const SignUpPage = () => {
   const [showPassword, setShowPassword] = useState(false);
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
+  };
+  const [fullName, setFullName] = useState("");
+  const [imgAvatar, setImgAvatar] = useState("01.png");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [cookies, setCookies] = useCookies(["access_token", "refresh_token"]);
+
+  const submitRegister = async (e) => {
+    e.preventDefault();
+
+    try {
+      const response = await axios.post(
+        process.env.NEXT_PUBLIC_BACKEND_URI + "/register",
+        { email, password, imgUri: imgAvatar, fullName }
+      );
+      const { access_token, refresh_token } = response.data;
+
+      if (access_token && refresh_token) {
+        // Store tokens in cookies
+        setCookies("access_token", access_token);
+        setCookies("refresh_token", refresh_token);
+      }
+      // Redirect to home page
+      window.location.href = "/";
+    } catch (error) {
+      console.log("Hi, something error happened");
+    }
   };
   return (
     <section className=" bg-gray-100 dark:bg-gray-900">
@@ -37,27 +65,26 @@ const SignUpPage = () => {
                   Create an account
                 </h3>
               </div>
-              <form action="">
+              <form action="" onSubmit={submitRegister}>
+                <AvatarSelectComponent
+                  imgAvatar={imgAvatar}
+                  setImgAvatar={setImgAvatar}
+                />
                 <div className="flex flex-wrap">
-                  <div className="mb-3 w-full lg:w-1/2 px-2">
+                  <div className="mb-3 w-full lg:w-full px-2">
                     <input
-                      className="w-full p-4 text-xs text-black dark:text-gray-50 dark:bg-gray-800 bg-gray-200 outline-none rounded"
+                      className="w-full  p-4  text-black dark:text-gray-50 dark:bg-gray-800 bg-gray-200 outline-none rounded"
                       type="text"
-                      placeholder="First Name"
-                    />
-                  </div>
-                  <div className="mb-3 w-full lg:w-1/2 px-2">
-                    <input
-                      className="w-full p-4 text-xs text-black dark:text-gray-50 dark:bg-gray-800 bg-gray-200 outline-none rounded"
-                      type="text"
-                      placeholder="Last Name"
+                      onChange={(e) => setFullName(e.target.value)}
+                      placeholder="Full Name"
                     />
                   </div>
                 </div>
-                <div className="mb-3 flex p-4 mx-2 bg-gray-800 rounded">
+                <div className="mb-3 flex p-4 mx-2 dark:bg-gray-800 bg-gray-200  rounded">
                   <input
-                    className="w-full text-xs text-black dark:text-gray-50 dark:bg-gray-800 bg-gray-200 outline-none"
+                    className="w-full text-black dark:text-gray-50 dark:bg-gray-800 bg-gray-200 outline-none"
                     type="email"
+                    onChange={(e) => setEmail(e.target.value)}
                     placeholder="name@example.com"
                   />
                   <svg
@@ -75,11 +102,12 @@ const SignUpPage = () => {
                     ></path>
                   </svg>
                 </div>
-                <div className="mb-6 flex p-4 mx-2 bg-gray-800 rounded">
+                <div className="mb-6 flex p-4 mx-2 dark:bg-gray-800 bg-gray-200 rounded">
                   <input
                     type={showPassword ? "text" : "password"}
-                    className="w-full text-xs text-gray-50 bg-gray-800 outline-none"
+                    className="w-full  text-black dark:text-gray-50 dark:bg-gray-800 bg-gray-200 outline-none"
                     placeholder="Enter your password"
+                    onChange={(e) => setPassword(e.target.value)}
                   />
                   <button type="button" onClick={togglePasswordVisibility}>
                     <svg
@@ -105,24 +133,18 @@ const SignUpPage = () => {
                   </button>
                 </div>
                 <div className="px-3 text-center">
-                  <button className="mb-2 w-full py-4 bg-pink-600 hover:bg-pink-700 rounded text-sm font-bold text-gray-50 transition duration-200">
+                  <button
+                    type="submit"
+                    className="mb-2 w-full py-4 bg-pink-600 hover:bg-pink-700 rounded text-sm font-bold text-gray-50 transition duration-200"
+                  >
                     Sign Up
                   </button>
-                  <span className="text-gray-400 text-xs">
+                  <span className="text-gray-700 dark:text-gray-400 text-xs">
                     <span>Already have an account?</span>
                     <a className="text-pink-600 hover:underline" href="#">
                       Sign In
                     </a>
                   </span>
-                  <p className="mt-16 text-xs text-gray-400">
-                    <a className="underline hover:text-gray-500" href="#">
-                      Privacy Policy
-                    </a>{" "}
-                    and{" "}
-                    <a className="underline hover:text-gray-500" href="#">
-                      Terms of Use
-                    </a>
-                  </p>
                 </div>
               </form>
             </div>
