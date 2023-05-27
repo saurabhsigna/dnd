@@ -1,5 +1,6 @@
 "use client";
 import React, { useState } from "react";
+import axios from "axios";
 import { useCookies } from "react-cookie";
 import AvatarSelectComponent from "../avatarSelector/AvatarSelectComponent";
 const SignUpPage = () => {
@@ -32,6 +33,7 @@ const SignUpPage = () => {
       window.location.href = "/";
     } catch (error) {
       console.log("Hi, something error happened");
+      console.log(error.message);
     }
   };
   return (
@@ -65,7 +67,7 @@ const SignUpPage = () => {
                   Create an account
                 </h3>
               </div>
-              <form action="" onSubmit={submitRegister}>
+              <form onSubmit={submitRegister}>
                 <AvatarSelectComponent
                   imgAvatar={imgAvatar}
                   setImgAvatar={setImgAvatar}
